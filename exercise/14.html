@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+
+  <script>
+    const wes = {
+      name: 'Wes',
+      age: 100,
+      social: {
+        twitter: '@wesbos',
+        facebook: 'wesbos.developer',
+        c: '2'
+      }
+    };
+    const person = {
+      name: 'Wes Bos',
+      age: 80
+    };
+    const cap2 = Object.assign({}, person, { number: 99, age: 12 });
+    const cap3 = Object.assign({}, wes, { number: 99, age: 12, social: { twitter: '@111', facebook: 'wesbos.1111', data: { a: 1 } } });
+    // console.log(person)
+    // console.log(cap2)
+    console.log(wes)
+    console.log(cap3)
+
+    function copy(obj) {
+      const objClone = Array.isArray(obj) ? [] : {}
+      if (obj && typeof obj === 'object') {
+        for (k in obj) {
+          console.log(k)
+          if (obj[k] && typeof obj[k] === 'object') {
+            objClone[k] = copy(obj[k])
+          } else {
+            objClone[k] = obj[k]
+          }
+        }
+        return objClone
+      }
+    }
+
+    // var obj1 = { family: { brother: "wangzhipeng", father: "wanglicai", mother: "sunaiyun" }, name: "gino", sex: "male", age: "27" };
+    // var obj2 = copy(obj1);
+    // obj1.sex = "close";
+    // console.log(obj1);
+    // console.log(obj2);
+
+    var deepClone = function (o) {
+      var copy = Object.create(Object.getPrototypeOf(o));
+      var propNames = Object.getOwnPropertyNames(o);
+
+      propNames.forEach(function (name) {
+        var desc = Object.getOwnPropertyDescriptor(o, name);
+        Object.defineProperty(copy, name, desc);
+      });
+
+      return copy;
+    }
+
+    var obj1 = { family: { brother: "wangzhipeng", father: "wanglicai", mother: "sunaiyun" }, name: "gino", sex: "male", age: "27" };
+    var obj2 = deepClone(obj1);
+    obj1.sex = "close";
+    console.log(obj1);
+    console.log(obj2);
+
+  </script>
+
+</body>
+
+</html>

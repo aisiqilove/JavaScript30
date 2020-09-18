@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+
+<body>
+  <canvas id="draw" width="800" height="800"></canvas>
+  <script>
+    // 获取canvas
+    const canvas = document.querySelector('#draw');
+    // 转成2d 对象 提供用于在画布绘图和属性
+    const ctx = canvas.getContext('2d');
+    // 设置width height
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    // 是否在绘画中
+    let isDrawing = false;
+    // 起始点
+    let lastX = 0;
+    let lastY = 0;
+    // 绘画属性
+    ctx.lineWidth = 90;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#f00";
+    ctx.fillStyle = "#f00";
+
+    // 控制笔画宽度和笔画颜色
+    let hue = 0;
+    let direction = true;
+    // 移动 x,y
+    let x = 0;
+    let y = 0;
+
+    function draw(e) {
+      if (!isDrawing) return
+
+      if (e.type === 'mousemove') {
+        x = e.offsetX
+        y = e.offsetY
+      } else {
+        // 处理手机/触摸屏操作
+        x = e.changedTouches[0].clientX
+        y = e.changedTouches[0].clientY
+      }
+
+      // 彩虹效果
+      // ctx.strokeStyle = `hsl(${hue}, 90%, 50%)`;
+      if (hue >= 360) hue = 0;
+      hue++;
+
+      // 笔画宽度
+      if (ctx.lineWidth > 120 || ctx.lineWidth < 10) {
+        direction = !direction
+      }
+      if (direction) {
+        ctx.lineWidth++
+      } else {
+        ctx.lineWidth--
+      }
+
+
+      // 路径
+      ctx.beginPath()
+      ctx.moveTo(lastX, lastY)
+      ctx.lineTo(x, y)
+      ctx.stroke()
+
+      // [lastX, lastY] = [x, y]
+      lastX = x
+      lastY = y
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true
+      [lastX, lastY] = [e.offsetX, e.offsetY]
+    })
+
+    canvas.addEventListener('mousemove', draw)
+    canvas.addEventListener('mouseout', () => isDrawing = false)
+    canvas.addEventListener('mouseup', () => isDrawing = false)
+
+    // 移动端
+    canvas.addEventListener('touchstart', (e) => {
+      isDrawing = true
+      lastX = e.changedTouches[0].clientX
+      lastY = e.changedTouches[0].clientY
+    })
+
+    canvas.addEventListener('touchmove', draw)
+    canvas.addEventListener('touchend', () => isDrawing = false)
+    canvas.addEventListener('touchcancel', () => isDrawing = false)
+
+  </script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      overflow: hidden;
+
+    }
+
+    canvas {
+      overflow: hidden;
+    }
+  </style>
+
+</body>
+
+</html>

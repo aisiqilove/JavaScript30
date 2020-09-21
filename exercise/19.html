@@ -2,41 +2,41 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Get User Media Code Along!</title>
-  <style>
-    html,
-    body {
-      padding: 0;
-      margin: 0;
-      height: 100%;
-      width: 100%;
-    }
+    <meta charset="UTF-8">
+    <title>Get User Media Code Along!</title>
+    <style>
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
 
-    .player {
-      height: 200px;
-      width: 300px;
-    }
+        .player {
+            height: 200px;
+            width: 300px;
+        }
 
-    .hasimg {
-      display: inline-block;
-      vertical-align: top;
-    }
+        .hasimg {
+            display: inline-block;
+            vertical-align: top;
+        }
 
-    .strip {
-      height: 200px;
-      width: 300px;
-    }
-  </style>
+        .strip {
+            height: 200px;
+            width: 300px;
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="photobooth">
-    <div class="controls">
-      <button onClick="takePhoto()">Take Photo</button>
-      <button onClick="savePhoto()">Save Photo</button>
-      <!--       <div class="rgb">
+    <div class="photobooth">
+        <div class="controls">
+            <button onClick="takePhoto()">Take Photo</button>
+            <button onClick="savePhoto()">Save Photo</button>
+            <!--       <div class="rgb">
         <label for="rmin">Red Min:</label>
         <input type="range" min=0 max=255 name="rmin">
         <label for="rmax">Red Max:</label>
@@ -56,78 +56,86 @@
         <label for="bmax">Blue Max:</label>
         <input type="range" min=0 max=255 name="bmax">
       </div> -->
+        </div>
+        <div class="hasimg">
+            <p>照片区域：</p>
+            <canvas class="photo" height="200" width="300"></canvas>
+        </div>
+        <div class="hasimg">
+            <p>实时视频区域：</p>
+            <video class="player"></video>
+        </div>
+        <div class="hasimg">
+            <p>变色画布区域:</p>
+            <div class="strip">
+                <a href="">
+                    <img alt="暂未保存图像" id='myimg'>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="hasimg">
-      <p>照片区域：</p>
-      <canvas class="photo" height="200" width="300"></canvas>
-    </div>
-    <div class="hasimg">
-      <p>实时视频区域：</p>
-      <video class="player"></video>
-    </div>
-    <div class="hasimg">
-      <p>变色画布区域:</p>
-      <div class="strip">
-        <a href="">
-          <img alt="暂未保存图像" id='myimg'>
-        </a>
-      </div>
-    </div>
-  </div>
 
-  <script>
+    <script>
 
-    canvas = document.querySelector('canvas');
-    video = document.querySelector('video');
-    ctx = canvas.getContext('2d');
-    img = document.querySelector('#myimg');
-    // slider = document.querySelector('.rgb');
-    a = document.querySelector('a');
+        canvas = document.querySelector('canvas');
+        video = document.querySelector('video');
+        ctx = canvas.getContext('2d');
+        img = document.querySelector('#myimg');
+        // slider = document.querySelector('.rgb');
+        a = document.querySelector('a');
 
-    function takePhoto() {
-      ctx.drawImage(video, 0, 0, 300, 200);
-      //将原始截图保存,
-      origindata = ctx.getImageData(0, 0, 300, 200);
-    }
-    //保存图片
-    function savePhoto() {
-      img.src = canvas.toDataURL();
-      a.href = canvas.toDataURL();
-      a.setAttribute('download', 'handsome');
-    }
-    setInterval(drawImg(), 1000 / 24);
-    function drawImg() {
-      //获得来自webcam的数据并将其绘制在canvas上
+        let isPlay = false
 
-    }
-    function askWebcam() {
-      navigator.getUserMedia = navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-      if (navigator.getUserMedia) {
-        navigator.getUserMedia({
-          audio: false,
-          video: {
-            width: 300,
-            height: 200
-          }
-        }, function (stream) {
-          //若成功
-          video.srcObject = stream;
-          video.onloadedmetadata = function (e) {
-            video.play();
-          }
-        }, function (err) {
-          console.log('Error occured:' + err.name);
-        });
-      } else {
-        console.log('this navigator doesn\'t support webcam!');
-      }
-    }
+        function takePhoto() {
+            ctx.drawImage(video, 0, 0, 300, 200);
+            //将原始截图保存,
+            origindata = ctx.getImageData(0, 0, 300, 200);
+        }
+        //保存图片
+        function savePhoto() {
+            img.src = canvas.toDataURL();
+            a.href = canvas.toDataURL();
+            a.setAttribute('download', 'handsome');
+        }
 
-    askWebcam()
+        function askWebcam() {
+            navigator.getUserMedia = navigator.getUserMedia ||
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia;
+            if (navigator.getUserMedia) {
+                navigator.getUserMedia({
+                    audio: false,
+                    video: {
+                        width: 300,
+                        height: 200
+                    }
+                }, function (stream) {
+                    //若成功
+                    video.srcObject = stream;
+                    video.onloadedmetadata = function (e) {
+                        video.play();
+                        isPlay = true
+                    }
+                }, function (err) {
+                    console.log('Error occured:' + err.name);
+                });
+            } else {
+                console.log('this navigator doesn\'t support webcam!');
+            }
+        }
 
-  </script>
+        askWebcam()
+
+        function drawImg() {
+            if (isPlay) {
+                //实现canvas和video同步
+                //获得来自webcam的数据并将其绘制在canvas上
+                ctx.drawImage(video, 0, 0, 300, 200);
+            }
+        }
+
+        setInterval(drawImg, 1000 / 24)
+    </script>
 
 </body>
 

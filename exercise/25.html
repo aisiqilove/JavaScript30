@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+  <ul class="ul-box">
+    <li onclick="liClick(event)" class="li1">1</li>
+    <li class="li2">2</li>
+    <li class="li3">3</li>
+    <li class="li4">4</li>
+    <li class="li5">5</li>
+  </ul>
+
+  <style>
+    html {
+      box-sizing: border-box;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    div {
+      width: 100%;
+      padding: 100px;
+    }
+
+    .one {
+      background: thistle;
+    }
+
+    .two {
+      background: mistyrose;
+    }
+
+    .three {
+      background: coral;
+    }
+  </style>
+
+  <script>
+    let divs = document.querySelectorAll('div');
+    let lis = document.querySelectorAll('li');
+    let li1 = document.querySelector('.li1');
+    let ulBox = document.querySelector('.ul-box');
+    let one = document.querySelector('.one');
+    let two = document.querySelector('.two');
+    let three = document.querySelector('.three');
+    divs.forEach(div => div.addEventListener('click', logText, {
+      once: true,
+      capture: false
+    }));
+
+
+    one.addEventListener('click', logText1, {
+      // capture: true
+    });
+    two.addEventListener('click', logText2, {
+      // capture: true
+    });
+    three.addEventListener('click', logText3, {
+      capture: true
+    });
+
+
+    function logText(e) {
+      console.log(this.classList.value);
+      // e.stopPropagation();
+    }
+
+    function logText1(e) {
+      console.log(this.classList.value);
+      // e.stopPropagation();
+    }
+
+    function logText2(e) {
+      console.log(this.classList.value);
+      // e.stopPropagation();
+    }
+
+    function logText3(e) {
+      console.log(this.classList.value);
+      e.stopPropagation();
+    }
+
+    function logText4(e) {
+      console.log(e);
+      console.log(this.classList);
+    }
+
+    function lisClick(e) {
+      console.log('lis false_冒泡')
+    }
+
+    function liClick(e) {
+      console.log('li true_捕获')
+    }
+
+    // li1.addEventListener('click', liClick, true)
+
+
+    lis.forEach(div => div.addEventListener('click', lisClick, false));
+
+
+    ulBox.addEventListener('click', ulClick, {
+      capture: true
+    });
+
+    function ulClick(e) {
+      // console.log(this.classList.value);
+    }
+
+    // 先事件捕获 再触发事件冒泡
+
+  </script>
+</body>
+
+</html>

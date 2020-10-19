@@ -51,19 +51,19 @@
 
         function debounce(fn, delay = 200) {
             let timer = null
-            return (...agrs) => {
+            return (...args) => {
                 clearTimeout(timer)
-                timer = setTimeout((...agrs) => fn(...agrs), delay)
+                timer = setTimeout((...args) => fn(...args), delay)
             }
         }
 
         function throttle(fn, delay = 1000) {
             let flag = false
-            return (...agrs) => {
+            return (...args) => {
                 if (flag) return
                 flag = true
-                setTimeout((...agrs) => {
-                    fn(...agrs)
+                setTimeout((...args) => {
+                    fn(...args)
                     flag = false
                 }, delay)
             }
